@@ -83,19 +83,21 @@ export default function Products({
                   <div className="absolute inset-0 bg-[#3D2B1F]/25 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                     <button 
                       onClick={() => handleQuickAdd(product)}
-                      className="bg-[#3D2B1F] text-white px-6 py-3 text-[10px] uppercase tracking-[0.2em] font-sans font-bold hover:bg-[#B48C44] transition-colors transform translate-y-4 group-hover:translate-y-0 duration-300 flex items-center gap-2 cursor-pointer shadow-lg"
+                      className="btn-sweep bg-[#3D2B1F] text-white px-6 py-3 text-[10px] uppercase tracking-[0.2em] font-sans font-bold transform translate-y-4 group-hover:translate-y-0 duration-300 flex items-center gap-2 cursor-pointer shadow-lg"
                     >
-                      {addedId === product.id ? (
-                        <>
-                          <Check className="w-3.5 h-3.5 text-emerald-400" />
-                          <span>ADDED TO CART</span>
-                        </>
-                      ) : (
-                        <>
-                          <ShoppingBag className="w-3.5 h-3.5" />
-                          <span>QUICK ADD</span>
-                        </>
-                      )}
+                      <span className="relative z-10 flex items-center gap-2">
+                        {addedId === product.id ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>ADDED TO CART</span>
+                          </>
+                        ) : (
+                          <>
+                            <ShoppingBag className="w-3.5 h-3.5" />
+                            <span>QUICK ADD</span>
+                          </>
+                        )}
+                      </span>
                     </button>
                   </div>
                 </div>

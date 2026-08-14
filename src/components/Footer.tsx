@@ -10,7 +10,7 @@ export default function Footer() {
           <div>
             <h3 className="text-[#3D2B1F] text-[11px] uppercase tracking-[0.2em] font-sans font-bold mb-6">CHIKMAGALUR COFFEE WORKS</h3>
             <p className="text-sm leading-relaxed mb-8 opacity-80 italic">
-              Bringing you the finest Chikmagalur coffee since 1938. Experience the rich heritage and perfect aroma in every cup.
+              Bringing you the finest Chikmagalur coffee. Experience the rich heritage and perfect aroma in every cup.
             </p>
             <div className="flex space-x-6">
               <a href="#" className="hover:text-[#B48C44] transition-colors"><Facebook className="h-4 w-4" /></a>
@@ -18,13 +18,13 @@ export default function Footer() {
               <a href="#" className="hover:text-[#B48C44] transition-colors"><Twitter className="h-4 w-4" /></a>
             </div>
           </div>
-          
+
           <div>
             <h3 className="text-[#3D2B1F] text-[11px] uppercase tracking-[0.2em] font-sans font-bold mb-6">QUICK LINKS</h3>
             <ul className="space-y-4 text-sm opacity-80 font-sans">
               <li><Link to="/" className="hover:text-[#B48C44] transition-colors">Search</Link></li>
               <li><Link to="/shop" className="hover:text-[#B48C44] transition-colors">Shop</Link></li>
-              <li><Link to="/shop" className="hover:text-[#B48C44] transition-colors">Wholesale</Link></li>
+              <li><Link to="/contact" className="hover:text-[#B48C44] transition-colors">Franchise</Link></li>
               <li><Link to="/" className="hover:text-[#B48C44] transition-colors">About Us</Link></li>
               <li><Link to="/contact" className="hover:text-[#B48C44] transition-colors">Contact</Link></li>
             </ul>
@@ -44,9 +44,9 @@ export default function Footer() {
             <ul className="space-y-5 text-sm opacity-80 font-sans">
               <li className="flex items-start">
                 <MapPin className="h-4 w-4 mr-4 mt-1 text-[#B48C44] flex-shrink-0" />
-                <a 
-                  href="https://maps.app.goo.gl/FFWhMxf7ws4gdKap8" 
-                  target="_blank" 
+                <a
+                  href="https://maps.google.com?q=Beside+Dilsukhnagar+Public+school,+Opposite+Peddabavi+Gardens,+Badangpet,+Ranga+Reddy,+Telangana+500058"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-[#B48C44] transition-colors leading-relaxed"
                 >
@@ -62,12 +62,12 @@ export default function Footer() {
               </li>
               <li className="flex items-center">
                 <Mail className="h-4 w-4 mr-4 text-[#B48C44]" />
-                <a href="mailto:info@chikmagalurcoffee.com" className="hover:text-[#B48C44] transition-colors">info@chikmagalurcoffee.com</a>
+                <a href="mailto:Chikmagalurhyderabad@gmail.com" className="hover:text-[#B48C44] transition-colors">Chikmagalurhyderabad@gmail.com</a>
               </li>
             </ul>
           </div>
         </div>
-        
+
         <div className="border-t border-[#3D2B1F]/10 pt-8 flex flex-col md:flex-row justify-between items-center text-[10px] uppercase tracking-[0.15em] font-sans font-bold opacity-60">
           <p>&copy; {new Date().getFullYear()} Chikmagalur Coffee Works. All rights reserved.</p>
           <div className="mt-4 md:mt-0 italic">

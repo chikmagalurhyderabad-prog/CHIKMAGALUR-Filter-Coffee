@@ -1,59 +1,127 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+
+const slides = [
+  {
+    id: 1,
+    subtitle: "Chikmagalur Heritage",
+    title: "Best Chikmagalur Coffee",
+    description: "Shop Online from Chikmagalur Coffee Works. Buy Coffee Powder, Roasted Beans, Tea, Spices, and Brewing Accessories.",
+    buttonText: "SHOP NOW",
+    buttonLink: "/shop",
+    showPrice: true,
+  },
+  {
+    id: 2,
+    subtitle: "Partner With Us",
+    title: "Franchise Opportunity",
+    description: "Join the Chikmagalur Filter Coffee family. Open your own premium outlet with our complete end-to-end franchise support.",
+    buttonText: "FRANCHISE ENQUIRY",
+    buttonLink: "/contact",
+    showPrice: false,
+  }
+];
 
 export default function Hero() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length);
+  const prevSlide = () => setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+
   return (
-    <div className="relative bg-[#FAF7F2] py-20 lg:py-32 flex items-center overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row gap-16 items-center w-full relative z-10">
-        <div className="w-full lg:w-[45%] flex flex-col space-y-8">
-          <div>
-            <span className="text-[#B48C44] text-xs uppercase tracking-[0.3em] font-sans font-bold block mb-4">Chikmagalur Heritage</span>
-            <h1 className="text-5xl lg:text-7xl leading-[1.05] tracking-tight font-medium mb-6 text-[#3D2B1F]">
-              Best Chikmagalur Coffee
-            </h1>
-            <p className="text-lg leading-relaxed opacity-80 max-w-md text-[#3D2B1F]">
-              Shop Online from Chikmagalur Coffee Works. Buy Coffee Powder, Roasted Beans, Tea, Spices, and Brewing Accessories.
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-6">
-            <Link
-              to="/shop"
-              className="bg-[#3D2B1F] text-white px-10 py-5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold hover:bg-[#B48C44] transition-colors inline-block"
-            >
-              SHOP NOW
-            </Link>
-            <div className="flex flex-col">
-              <span className="text-[10px] uppercase tracking-[0.1em] opacity-40 font-sans font-bold text-[#3D2B1F]">Starting at</span>
-              <span className="text-xl text-[#3D2B1F]">₹150.00</span>
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#3D2B1F]">
+      {/* Static Background Video */}
+      <video
+        src="/hero-video.mp4"
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
+      />
+
+      <div className="absolute inset-0 bg-[#3D2B1F]/60 mix-blend-multiply" />
+      <div className="absolute inset-0 bg-black/30" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center w-full relative z-10 pt-20">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentSlide}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -30 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="w-full max-w-3xl flex flex-col items-center space-y-8"
+          >
+            <div>
+              <span className="text-[#B48C44] text-xs uppercase tracking-[0.3em] font-sans font-bold block mb-4">
+                {slides[currentSlide].subtitle}
+              </span>
+              <h1 className="text-5xl lg:text-7xl leading-[1.05] tracking-tight font-medium mb-6 text-white drop-shadow-lg">
+                {slides[currentSlide].title}
+              </h1>
+              <p className="text-lg leading-relaxed text-white/90 max-w-xl mx-auto font-light drop-shadow-md">
+                {slides[currentSlide].description}
+              </p>
             </div>
-          </div>
-        </div>
-        <div className="w-full lg:w-[55%] relative flex justify-center items-center mt-12 lg:mt-0 h-[400px] lg:h-[600px]">
-           <div className="absolute w-full max-w-[450px] aspect-[3/4] bg-[#3D2B1F] rotate-2 shadow-2xl overflow-hidden hidden sm:block">
-             <img
-               src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
-               alt="Coffee Beans"
-               className="w-full h-full object-cover opacity-80 mix-blend-overlay"
-             />
-             <div className="absolute inset-4 border border-[#B48C44]/30 flex flex-col items-center justify-between py-12 pointer-events-none">
-                <div className="w-24 h-24 border border-[#B48C44]/50 rounded-full flex items-center justify-center">
-                  <span className="text-[#B48C44] text-3xl font-bold font-serif italic">C</span>
+            <div className="flex flex-wrap items-center justify-center gap-6 mt-4">
+              <Link
+                to={slides[currentSlide].buttonLink}
+                className="btn-sweep bg-[#3D2B1F] text-white px-10 py-5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold inline-block border border-transparent hover:border-[#B48C44] transition-colors"
+              >
+                <span className="relative z-10">{slides[currentSlide].buttonText}</span>
+              </Link>
+              {slides[currentSlide].showPrice && (
+                <div className="flex flex-col text-left border-l border-white/20 pl-6">
+                  <span className="text-[10px] uppercase tracking-[0.1em] text-white/70 font-sans font-bold">Starting at</span>
+                  <span className="text-xl text-white font-medium">₹150.00</span>
                 </div>
-                <div className="text-center px-8">
-                  <h3 className="text-[#FAF7F2] text-3xl uppercase tracking-[0.2em] font-bold mb-2 font-sans">Premium</h3>
-                  <div className="h-[1px] w-20 bg-[#B48C44] mx-auto mb-4"></div>
-                  <p className="text-[#B48C44] text-[10px] uppercase tracking-[0.3em] font-sans font-bold">100% Arabica</p>
-                </div>
-             </div>
-           </div>
-           {/* Fallback simple image for smaller screens if needed */}
-           <img
-             src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
-             alt="Coffee Beans"
-             className="w-full h-full object-cover shadow-2xl sm:hidden"
-           />
-        </div>
+              )}
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Navigation Arrows */}
+      <button
+        onClick={prevSlide}
+        className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-black/20 text-white hover:bg-black/50 hover:text-[#B48C44] transition-all backdrop-blur-sm group hidden sm:block"
+        aria-label="Previous slide"
+      >
+        <ChevronLeft className="w-6 h-6 group-hover:-translate-x-0.5 transition-transform" />
+      </button>
+      <button
+        onClick={nextSlide}
+        className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-black/20 text-white hover:bg-black/50 hover:text-[#B48C44] transition-all backdrop-blur-sm group hidden sm:block"
+        aria-label="Next slide"
+      >
+        <ChevronRight className="w-6 h-6 group-hover:translate-x-0.5 transition-transform" />
+      </button>
+
+      {/* Slide Indicators */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex space-x-3">
+        {slides.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentSlide(index)}
+            className={`transition-all duration-300 rounded-full ${currentSlide === index
+              ? 'w-8 h-2 bg-[#B48C44]'
+              : 'w-2 h-2 bg-white/50 hover:bg-white/80'
+              }`}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
       </div>
     </div>
   );
 }
+
