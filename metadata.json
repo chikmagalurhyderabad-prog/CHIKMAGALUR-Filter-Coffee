@@ -1,0 +1,7 @@
+{
+  "name": "Chikmagalur Filter Coffee",
+  "description": "Authentic single-estate South Indian filter coffee with profile management, shopping cart, roastery orders, and live catalogue.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
