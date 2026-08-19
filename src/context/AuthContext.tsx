@@ -4,32 +4,7 @@ import { auth, db } from '../lib/firebase';
 import { onAuthStateChanged, signInAnonymously, signOut as fbSignOut } from 'firebase/auth';
 import { collection, query, where, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 
-const DEFAULT_ADDRESSES: ShippingAddress[] = [
-  {
-    id: 'addr-1',
-    fullName: 'Rishanth Reddy',
-    phone: '+91 98765 43210',
-    street: 'Flat 402, Kaveri Heights, 12th Main Road, Indiranagar',
-    landmark: 'Near 100ft Road Club',
-    city: 'Bengaluru',
-    state: 'Karnataka',
-    pincode: '560038',
-    isDefault: true,
-    label: 'Home'
-  },
-  {
-    id: 'addr-2',
-    fullName: 'Rishanth Reddy',
-    phone: '+91 98765 43210',
-    street: 'Tech Park Tower B, 4th Floor, Electronic City Phase 1',
-    landmark: 'Opposite Infosys Gate 2',
-    city: 'Bengaluru',
-    state: 'Karnataka',
-    pincode: '560100',
-    isDefault: false,
-    label: 'Office'
-  }
-];
+const DEFAULT_ADDRESSES: ShippingAddress[] = [];
 
 const DEFAULT_PREFERENCES: UserPreferences = {
   roastPreference: 'Medium-Dark',
@@ -38,64 +13,7 @@ const DEFAULT_PREFERENCES: UserPreferences = {
   milkType: 'Whole Milk'
 };
 
-const DEFAULT_ORDERS: Order[] = [
-  {
-    id: 'ord-ckm-1082',
-    orderNumber: 'CKM-1938-1082',
-    date: '12 Aug 2026',
-    items: [
-      {
-        productId: 1,
-        name: 'Grand Aroma Coffee Powder (80:20)',
-        image: 'https://images.unsplash.com/photo-1559525839-b184a4d698c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        grind: 'Traditional South Indian Filter Grind',
-        weight: '500g',
-        quantity: 2,
-        unitPrice: 150
-      },
-      {
-        productId: 3,
-        name: 'Peaberry Roasted Beans',
-        image: 'https://images.unsplash.com/photo-1558160074-4d7d8bdf4256?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        grind: 'Whole Roasted Beans',
-        weight: '250g',
-        quantity: 1,
-        unitPrice: 400
-      }
-    ],
-    subtotal: 700,
-    discount: 70,
-    shipping: 0,
-    total: 630,
-    status: 'In Transit',
-    shippingAddress: DEFAULT_ADDRESSES[0],
-    paymentMethod: 'UPI',
-    notes: 'Please pack in fresh valve bags'
-  },
-  {
-    id: 'ord-ckm-1049',
-    orderNumber: 'CKM-1938-1049',
-    date: '28 Jul 2026',
-    items: [
-      {
-        productId: 4,
-        name: 'Estate Blend Coffee',
-        image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        grind: 'Traditional South Indian Filter Grind',
-        weight: '500g',
-        quantity: 3,
-        unitPrice: 200
-      }
-    ],
-    subtotal: 600,
-    discount: 0,
-    shipping: 0,
-    total: 600,
-    status: 'Delivered',
-    shippingAddress: DEFAULT_ADDRESSES[0],
-    paymentMethod: 'Credit / Debit Card'
-  }
-];
+const DEFAULT_ORDERS: Order[] = [];
 
 interface AuthContextType {
   user: UserProfile | null;
@@ -120,17 +38,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const saved = localStorage.getItem('chikmagalur_user_profile');
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (parsed.name === 'Rishanth Reddy') {
+          localStorage.removeItem('chikmagalur_user_profile');
+        } else {
+          return parsed;
+        }
       } catch (e) {
         console.error('Failed to parse saved user', e);
       }
     }
     return {
       uid: 'usr-kaapi-connoisseur-1',
-      name: 'Rishanth Reddy',
-      email: 'golirishanthreddy@gmail.com',
-      phone: '+91 98765 43210',
-      memberSince: 'July 2024',
+      name: '',
+      email: '',
+      phone: '',
+      memberSince: 'Just now',
       addresses: DEFAULT_ADDRESSES,
       preferences: DEFAULT_PREFERENCES
     };

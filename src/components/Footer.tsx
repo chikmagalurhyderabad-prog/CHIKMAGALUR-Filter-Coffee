@@ -45,7 +45,7 @@ export default function Footer() {
               <li className="flex items-start">
                 <MapPin className="h-4 w-4 mr-4 mt-1 text-[#B48C44] flex-shrink-0" />
                 <a
-                  href="https://maps.google.com?q=Beside+Dilsukhnagar+Public+school,+Opposite+Peddabavi+Gardens,+Badangpet,+Ranga+Reddy,+Telangana+500058"
+                  href="https://maps.app.goo.gl/pTUVhB46Xc9ijihA6"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-[#B48C44] transition-colors leading-relaxed"

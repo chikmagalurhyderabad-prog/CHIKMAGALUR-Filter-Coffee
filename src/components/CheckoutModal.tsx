@@ -268,7 +268,7 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                           required
                           value={newFullName}
                           onChange={(e) => setNewFullName(e.target.value)}
-                          placeholder="e.g. Rishanth Reddy"
+                          placeholder="e.g. Your Name"
                           className="w-full border-b border-[#3D2B1F]/20 bg-transparent py-1.5 text-xs font-serif focus:outline-none focus:border-[#B48C44] text-[#3D2B1F]"
                         />
                       </div>
