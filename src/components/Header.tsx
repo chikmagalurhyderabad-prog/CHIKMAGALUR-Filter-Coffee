@@ -11,13 +11,15 @@ export default function Header() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const isHome = pathname === '/';
+  const isFranchise = pathname === '/franchise';
+  const isTransparent = isHome || isFranchise;
 
-  const textColorClass = isHome ? 'text-white' : 'text-[#3D2B1F]';
+  const textColorClass = isTransparent ? 'text-white' : 'text-[#593222]';
 
   return (
-    <header className={isHome
+    <header className={isTransparent
       ? "absolute top-0 left-0 right-0 bg-transparent border-b border-white/10 z-40 transition-all duration-300"
-      : "bg-[#FAF7F2] border-b border-[#3D2B1F]/10 sticky top-0 z-40 transition-all duration-300"}>
+      : "bg-[#FFFFFF] border-b border-[#593222]/10 sticky top-0 z-40 transition-all duration-300"}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-[96px]">
           <div className="flex items-center">
@@ -34,12 +36,14 @@ export default function Header() {
             </Link>
           </div>
 
-          <nav className="hidden md:flex space-x-8">
+          <nav className="hidden md:flex space-x-12 lg:space-x-20">
             <Link to="/" className={`nav-link text-[11px] uppercase tracking-[0.2em] font-sans font-semibold ${textColorClass} hover:text-[#B48C44] transition-colors`}>Home</Link>
             <Link to="/shop" className={`nav-link text-[11px] uppercase tracking-[0.2em] font-sans font-semibold ${textColorClass} hover:text-[#B48C44] transition-colors`}>Shop</Link>
-            <Link to="/contact" className={`nav-link text-[11px] uppercase tracking-[0.2em] font-sans font-semibold ${textColorClass} hover:text-[#B48C44] transition-colors`}>Franchise</Link>
-            <Link to="/shop" className={`nav-link text-[11px] uppercase tracking-[0.2em] font-sans font-semibold ${textColorClass} hover:text-[#B48C44] transition-colors`}>Private Label</Link>
+            <Link to="/franchise" className={`nav-link text-[11px] uppercase tracking-[0.2em] font-sans font-semibold ${textColorClass} hover:text-[#B48C44] transition-colors`}>Franchise</Link>
             <Link to="/contact" className={`nav-link text-[11px] uppercase tracking-[0.2em] font-sans font-semibold ${textColorClass} hover:text-[#B48C44] transition-colors`}>Contact</Link>
+            {user?.role === 'admin' && (
+              <Link to="/admin" className={`nav-link text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-red-500 hover:text-red-400 transition-colors`}>Admin Panel</Link>
+            )}
           </nav>
 
           <div className="flex items-center space-x-5 sm:space-x-6">
@@ -78,33 +82,33 @@ export default function Header() {
 
       {/* Mobile Navigation Drawer */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-[#FAF7F2] border-b border-[#3D2B1F]/15 px-6 py-6 space-y-4 animate-in slide-in-from-top-2 duration-200">
-          <div className="flex flex-col space-y-3 font-sans font-semibold text-xs uppercase tracking-[0.2em] text-[#3D2B1F]">
+        <div className="md:hidden bg-[#FFFFFF] border-b border-[#593222]/15 px-6 py-6 space-y-4 animate-in slide-in-from-top-2 duration-200">
+          <div className="flex flex-col space-y-3 font-sans font-semibold text-xs uppercase tracking-[0.2em] text-[#593222]">
             <Link
               to="/"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="py-2 hover:text-[#B48C44] border-b border-[#3D2B1F]/5"
+              className="py-2 hover:text-[#B48C44] border-b border-[#593222]/5"
             >
               Home
             </Link>
             <Link
               to="/shop"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="py-2 hover:text-[#B48C44] border-b border-[#3D2B1F]/5"
+              className="py-2 hover:text-[#B48C44] border-b border-[#593222]/5"
             >
               Coffee Shop
             </Link>
             <Link
-              to="/contact"
+              to="/franchise"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="py-2 hover:text-[#B48C44] border-b border-[#3D2B1F]/5"
+              className="py-2 hover:text-[#B48C44] border-b border-[#593222]/5"
             >
               Franchise
             </Link>
             <Link
               to="/cart"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="py-2 hover:text-[#B48C44] border-b border-[#3D2B1F]/5 flex justify-between items-center"
+              className="py-2 hover:text-[#B48C44] border-b border-[#593222]/5 flex justify-between items-center"
             >
               <span>Kaapi Cart</span>
               <span className="bg-[#B48C44] text-white px-2 py-0.5 text-[9px] rounded-full">
@@ -114,7 +118,7 @@ export default function Header() {
             <Link
               to="/profile"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="py-2 hover:text-[#B48C44] border-b border-[#3D2B1F]/5 flex justify-between items-center"
+              className="py-2 hover:text-[#B48C44] border-b border-[#593222]/5 flex justify-between items-center"
             >
               <span>My Profile & Orders</span>
               <User className="w-3.5 h-3.5 text-[#B48C44]" />
@@ -126,6 +130,15 @@ export default function Header() {
             >
               Contact Us
             </Link>
+            {user?.role === 'admin' && (
+              <Link
+                to="/admin"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="py-2 text-red-600 hover:text-red-400 border-t border-[#593222]/5"
+              >
+                Admin Panel
+              </Link>
+            )}
           </div>
         </div>
       )}

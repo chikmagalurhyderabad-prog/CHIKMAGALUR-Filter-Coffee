@@ -36,6 +36,16 @@ export default function Shop() {
 
   useEffect(() => {
     loadProducts(selectedCategory);
+
+    // Listen for updates from Admin dashboard
+    const handleUpdate = () => {
+      loadProducts(selectedCategory);
+    };
+    window.addEventListener('chk_products_updated', handleUpdate);
+    
+    return () => {
+      window.removeEventListener('chk_products_updated', handleUpdate);
+    };
   }, [selectedCategory]);
 
   const handleQuickAdd = (product: Product) => {
@@ -71,7 +81,7 @@ export default function Shop() {
     });
 
   return (
-    <div className="bg-[#FAF7F2] min-h-screen text-[#3D2B1F] py-16 lg:py-24">
+    <div className="bg-[#FFFFFF] min-h-screen text-[#593222] py-16 lg:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Page Header */}
@@ -79,7 +89,7 @@ export default function Shop() {
           <span className="text-[#B48C44] text-xs uppercase tracking-[0.3em] font-sans font-bold block mb-4">
             Curated Artisanal Kaapi
           </span>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight text-[#3D2B1F] mb-4">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight text-[#593222] mb-4">
             The Coffee Collection
           </h1>
           <p className="text-lg opacity-80 max-w-2xl mx-auto font-serif italic">
@@ -88,7 +98,7 @@ export default function Shop() {
         </div>
 
         {/* Filter & Controls Bar */}
-        <div className="border-y border-[#3D2B1F]/10 py-6 mb-12 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="border-y border-[#593222]/10 py-6 mb-12 flex flex-col md:flex-row items-center justify-between gap-6">
           
           {/* Category Tabs */}
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 sm:gap-4">
@@ -100,8 +110,8 @@ export default function Shop() {
                   onClick={() => handleCategoryClick(cat.id)}
                   className={`px-4 py-2 text-[11px] uppercase tracking-[0.2em] font-sans font-semibold transition-all duration-200 cursor-pointer ${
                     isActive
-                      ? 'bg-[#3D2B1F] text-[#FAF7F2]'
-                      : 'bg-transparent text-[#3D2B1F]/70 hover:text-[#3D2B1F] hover:bg-[#3D2B1F]/5 border border-transparent'
+                      ? 'bg-[#593222] text-[#FFFFFF]'
+                      : 'bg-transparent text-[#593222]/70 hover:text-[#593222] hover:bg-[#593222]/5 border border-transparent'
                   }`}
                 >
                   {cat.label}
@@ -119,22 +129,22 @@ export default function Shop() {
                 placeholder="Search roasts..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-transparent border border-[#3D2B1F]/20 text-xs py-2.5 pl-8 pr-3 font-sans focus:outline-none focus:border-[#B48C44] w-full sm:w-44 text-[#3D2B1F] placeholder-[#3D2B1F]/40"
+                className="bg-transparent border border-[#593222]/20 text-xs py-2.5 pl-8 pr-3 font-sans focus:outline-none focus:border-[#B48C44] w-full sm:w-44 text-[#593222] placeholder-[#593222]/40"
               />
-              <Search className="w-3.5 h-3.5 text-[#3D2B1F]/50 absolute left-2.5 top-3 pointer-events-none" />
+              <Search className="w-3.5 h-3.5 text-[#593222]/50 absolute left-2.5 top-3 pointer-events-none" />
             </div>
 
             {/* Sort Select */}
             <div className="flex items-center gap-2">
-              <SlidersHorizontal className="w-3.5 h-3.5 text-[#3D2B1F]/60" />
+              <SlidersHorizontal className="w-3.5 h-3.5 text-[#593222]/60" />
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="bg-transparent border border-[#3D2B1F]/20 text-xs py-2.5 px-3 font-sans focus:outline-none focus:border-[#B48C44] text-[#3D2B1F] cursor-pointer"
+                className="bg-transparent border border-[#593222]/20 text-xs py-2.5 px-3 font-sans focus:outline-none focus:border-[#B48C44] text-[#593222] cursor-pointer"
               >
-                <option value="featured" className="bg-[#FAF7F2] text-[#3D2B1F]">Featured</option>
-                <option value="price-asc" className="bg-[#FAF7F2] text-[#3D2B1F]">Price: Low to High</option>
-                <option value="price-desc" className="bg-[#FAF7F2] text-[#3D2B1F]">Price: High to Low</option>
+                <option value="featured" className="bg-[#FFFFFF] text-[#593222]">Featured</option>
+                <option value="price-asc" className="bg-[#FFFFFF] text-[#593222]">Price: Low to High</option>
+                <option value="price-desc" className="bg-[#FFFFFF] text-[#593222]">Price: High to Low</option>
               </select>
             </div>
 
@@ -143,7 +153,7 @@ export default function Shop() {
               onClick={() => loadProducts(selectedCategory)}
               disabled={isLoading}
               title="Refresh catalogue"
-              className="p-2.5 border border-[#3D2B1F]/20 hover:border-[#B48C44] hover:text-[#B48C44] transition-colors cursor-pointer disabled:opacity-40"
+              className="p-2.5 border border-[#593222]/20 hover:border-[#B48C44] hover:text-[#B48C44] transition-colors cursor-pointer disabled:opacity-40"
               aria-label="Refresh product list"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
@@ -166,13 +176,13 @@ export default function Shop() {
         {isLoading ? (
           <ProductSkeleton count={8} />
         ) : filteredProducts.length === 0 ? (
-          <div className="text-center py-20 border border-[#3D2B1F]/10 bg-[#FAF7F2]">
-            <p className="text-xl text-[#3D2B1F] opacity-70 italic font-serif mb-4">
+          <div className="text-center py-20 border border-[#593222]/10 bg-[#FFFFFF]">
+            <p className="text-xl text-[#593222] opacity-70 italic font-serif mb-4">
               No coffee blends matched your criteria.
             </p>
             <button
               onClick={() => { setSearchQuery(''); setSelectedCategory('all'); }}
-              className="border border-[#3D2B1F] text-[#3D2B1F] px-8 py-3 text-[10px] uppercase tracking-[0.2em] font-sans font-bold hover:bg-[#3D2B1F] hover:text-[#FAF7F2] transition-colors cursor-pointer"
+              className="border border-[#593222] text-[#593222] px-8 py-3 text-[10px] uppercase tracking-[0.2em] font-sans font-bold hover:bg-[#593222] hover:text-[#FFFFFF] transition-colors cursor-pointer"
             >
               Reset Filters
             </button>
@@ -182,9 +192,9 @@ export default function Shop() {
             {filteredProducts.map((product) => (
               <div 
                 key={product.id} 
-                className="group flex flex-col h-full border border-[#3D2B1F]/10 p-4 bg-[#FAF7F2] transition-all duration-300 hover:border-[#3D2B1F]/30"
+                className="group flex flex-col h-full border border-[#593222]/10 p-4 bg-[#FFFFFF] transition-all duration-300 hover:border-[#593222]/30"
               >
-                <div className="relative overflow-hidden aspect-[4/5] mb-6 bg-[#3D2B1F]/5">
+                <div className="relative overflow-hidden aspect-[4/5] mb-6 bg-[#593222]/5">
                   <img
                     src={product.image}
                     alt={product.name}
@@ -192,19 +202,19 @@ export default function Shop() {
                     loading="lazy"
                   />
                   {product.roastProfile && (
-                    <span className="absolute top-3 left-3 bg-[#FAF7F2]/90 backdrop-blur-xs text-[#3D2B1F] text-[9px] uppercase tracking-[0.15em] font-sans font-bold px-2 py-1 border border-[#3D2B1F]/10">
+                    <span className="absolute top-3 left-3 bg-[#FFFFFF]/90 backdrop-blur-xs text-[#593222] text-[9px] uppercase tracking-[0.15em] font-sans font-bold px-2 py-1 border border-[#593222]/10">
                       {product.roastProfile}
                     </span>
                   )}
                   {product.weight && (
-                    <span className="absolute bottom-3 right-3 bg-[#3D2B1F]/80 text-[#FAF7F2] text-[8px] uppercase tracking-[0.15em] font-sans px-2 py-0.5">
+                    <span className="absolute bottom-3 right-3 bg-[#593222]/80 text-[#FFFFFF] text-[8px] uppercase tracking-[0.15em] font-sans px-2 py-0.5">
                       {product.weight}
                     </span>
                   )}
-                  <div className="absolute inset-0 bg-[#3D2B1F]/25 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-[#593222]/25 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                     <button 
                       onClick={() => handleQuickAdd(product)}
-                      className="bg-[#3D2B1F] text-white px-6 py-3 text-[10px] uppercase tracking-[0.2em] font-sans font-bold hover:bg-[#B48C44] transition-colors transform translate-y-4 group-hover:translate-y-0 duration-300 flex items-center gap-2 cursor-pointer shadow-lg"
+                      className="bg-[#593222] text-white px-6 py-3 text-[10px] uppercase tracking-[0.2em] font-sans font-bold hover:bg-[#B48C44] transition-colors transform translate-y-4 group-hover:translate-y-0 duration-300 flex items-center gap-2 cursor-pointer shadow-lg"
                     >
                       {addedId === product.id ? (
                         <>
@@ -221,9 +231,9 @@ export default function Shop() {
                   </div>
                 </div>
                 <div className="flex flex-col flex-grow text-center">
-                  <h3 className="text-lg font-medium text-[#3D2B1F] mb-2 leading-snug">{product.name}</h3>
+                  <h3 className="text-lg font-medium text-[#593222] mb-2 leading-snug">{product.name}</h3>
                   <p className="text-[11px] uppercase tracking-[0.1em] font-sans font-bold opacity-60 mb-4 line-clamp-2">{product.description}</p>
-                  <div className="mt-auto pt-2 border-t border-[#3D2B1F]/5">
+                  <div className="mt-auto pt-2 border-t border-[#593222]/5">
                     <span className="text-[#B48C44] text-lg italic font-serif">{product.price}</span>
                   </div>
                 </div>

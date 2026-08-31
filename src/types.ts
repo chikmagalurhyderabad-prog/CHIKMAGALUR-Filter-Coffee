@@ -55,6 +55,7 @@ export interface UserProfile {
   memberSince?: string;
   addresses: ShippingAddress[];
   preferences: UserPreferences;
+  role?: 'admin' | 'user';
 }
 
 export interface OrderItem {

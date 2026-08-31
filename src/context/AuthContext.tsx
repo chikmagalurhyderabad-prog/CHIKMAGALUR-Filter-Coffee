@@ -1,8 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { UserProfile, ShippingAddress, UserPreferences, Order } from '../types';
-import { auth, db } from '../lib/firebase';
-import { onAuthStateChanged, signInAnonymously, signOut as fbSignOut } from 'firebase/auth';
-import { collection, query, where, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
+import { supabase } from '../lib/supabase';
+import { Session, User } from '@supabase/supabase-js';
 
 const DEFAULT_ADDRESSES: ShippingAddress[] = [];
 
@@ -27,63 +26,97 @@ interface AuthContextType {
   deleteAddress: (id: string) => void;
   setDefaultAddress: (id: string) => void;
   createOrder: (orderData: Omit<Order, 'id' | 'orderNumber' | 'date'>) => Promise<Order>;
-  loginAsGuest: () => void;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<UserProfile | null>(() => {
-    const saved = localStorage.getItem('chikmagalur_user_profile');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (parsed.name === 'Rishanth Reddy') {
-          localStorage.removeItem('chikmagalur_user_profile');
-        } else {
-          return parsed;
-        }
-      } catch (e) {
-        console.error('Failed to parse saved user', e);
-      }
-    }
-    return {
-      uid: 'usr-kaapi-connoisseur-1',
-      name: '',
-      email: '',
-      phone: '',
-      memberSince: 'Just now',
-      addresses: DEFAULT_ADDRESSES,
-      preferences: DEFAULT_PREFERENCES
-    };
-  });
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const [orders, setOrders] = useState<Order[]>(() => {
     const saved = localStorage.getItem('chikmagalur_orders');
     if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error('Failed to parse saved orders', e);
-      }
+      try { return JSON.parse(saved); } catch (e) { console.error(e); }
     }
     return DEFAULT_ORDERS;
   });
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem('chikmagalur_user_profile', JSON.stringify(user));
-    } else {
-      localStorage.removeItem('chikmagalur_user_profile');
-    }
-  }, [user]);
-
   useEffect(() => {
     localStorage.setItem('chikmagalur_orders', JSON.stringify(orders));
   }, [orders]);
+
+  useEffect(() => {
+    // 1. Check active session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session?.user) {
+        fetchUserProfile(session.user);
+      } else {
+        setIsLoading(false);
+      }
+    });
+
+    // 2. Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session?.user) {
+        fetchUserProfile(session.user);
+      } else {
+        setUser(null);
+        setIsLoading(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const fetchUserProfile = async (supabaseUser: User) => {
+    setIsLoading(true);
+    try {
+      // In a real app, we fetch from 'profiles' table.
+      // For now, if the table isn't set up yet, we'll mock the response based on the user's email.
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', supabaseUser.id)
+        .single();
+      
+      // If error occurs (e.g. table doesn't exist yet because we deferred setup), use fallback mock
+      const userRole = (error || !profile) && supabaseUser.email === 'admin@chikmagalur.com' ? 'admin' : (profile?.role || 'user');
+      const userName = profile?.name || supabaseUser.email?.split('@')[0] || 'Coffee Lover';
+
+      // Load mock local addresses & preferences for now
+      const savedLocalStr = localStorage.getItem(`chk_mock_data_${supabaseUser.id}`);
+      const savedLocal = savedLocalStr ? JSON.parse(savedLocalStr) : { addresses: DEFAULT_ADDRESSES, preferences: DEFAULT_PREFERENCES };
+
+      setUser({
+        uid: supabaseUser.id,
+        name: userName,
+        email: supabaseUser.email || '',
+        memberSince: profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : 'Just now',
+        role: userRole,
+        addresses: savedLocal.addresses,
+        preferences: savedLocal.preferences
+      });
+    } catch (err) {
+      console.error('Error fetching profile:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Keep local mock data in sync if we update it
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem(`chk_mock_data_${user.uid}`, JSON.stringify({
+        addresses: user.addresses,
+        preferences: user.preferences
+      }));
+    }
+  }, [user]);
 
   const updateProfile = (updated: Partial<UserProfile>) => {
     setUser(prev => prev ? { ...prev, ...updated } : null);
@@ -92,33 +125,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const updatePreferences = (prefs: Partial<UserPreferences>) => {
     setUser(prev => {
       if (!prev) return null;
-      return {
-        ...prev,
-        preferences: {
-          ...prev.preferences,
-          ...prefs
-        }
-      };
+      return { ...prev, preferences: { ...prev.preferences, ...prefs } };
     });
   };
 
   const addAddress = (newAddr: Omit<ShippingAddress, 'id'>) => {
     const addrId = `addr-${Date.now()}`;
-    const formatted: ShippingAddress = {
-      ...newAddr,
-      id: addrId,
-      isDefault: newAddr.isDefault || (user?.addresses.length === 0)
-    };
-
     setUser(prev => {
       if (!prev) return null;
+      const formatted: ShippingAddress = {
+        ...newAddr,
+        id: addrId,
+        isDefault: newAddr.isDefault || (prev.addresses.length === 0)
+      };
       const updatedAddresses = formatted.isDefault
         ? prev.addresses.map(a => ({ ...a, isDefault: false })).concat(formatted)
         : [...prev.addresses, formatted];
-      return {
-        ...prev,
-        addresses: updatedAddresses
-      };
+      return { ...prev, addresses: updatedAddresses };
     });
   };
 
@@ -129,10 +152,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (patch.isDefault) {
         updatedAddresses = updatedAddresses.map(a => a.id === id ? { ...a, isDefault: true } : { ...a, isDefault: false });
       }
-      return {
-        ...prev,
-        addresses: updatedAddresses
-      };
+      return { ...prev, addresses: updatedAddresses };
     });
   };
 
@@ -143,10 +163,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (filtered.length > 0 && !filtered.some(a => a.isDefault)) {
         filtered[0].isDefault = true;
       }
-      return {
-        ...prev,
-        addresses: filtered
-      };
+      return { ...prev, addresses: filtered };
     });
   };
 
@@ -155,47 +172,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!prev) return null;
       return {
         ...prev,
-        addresses: prev.addresses.map(a => ({
-          ...a,
-          isDefault: a.id === id
-        }))
+        addresses: prev.addresses.map(a => ({ ...a, isDefault: a.id === id }))
       };
     });
   };
 
   const createOrder = async (orderData: Omit<Order, 'id' | 'orderNumber' | 'date'>): Promise<Order> => {
     const randomNum = Math.floor(1000 + Math.random() * 9000);
-    const orderNumber = `CKM-1938-${randomNum}`;
-    const dateFormatted = new Date().toLocaleDateString('en-GB', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric'
-    });
-
     const newOrder: Order = {
       ...orderData,
       id: `ord-${Date.now()}`,
-      orderNumber,
-      date: dateFormatted,
+      orderNumber: `CKM-1938-${randomNum}`,
+      date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
     };
-
     setOrders(prev => [newOrder, ...prev]);
-
     return newOrder;
   };
 
-  const loginAsGuest = () => {
-    setUser({
-      uid: `guest-${Date.now()}`,
-      name: 'Kaapi Enthusiast',
-      email: 'customer@chikmagalurcoffee.com',
-      memberSince: 'Just now',
-      addresses: DEFAULT_ADDRESSES,
-      preferences: DEFAULT_PREFERENCES
-    });
-  };
-
-  const logout = () => {
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
   };
 
@@ -213,7 +208,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         deleteAddress,
         setDefaultAddress,
         createOrder,
-        loginAsGuest,
         logout
       }}
     >

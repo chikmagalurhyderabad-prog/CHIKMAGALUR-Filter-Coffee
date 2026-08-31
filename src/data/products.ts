@@ -1,4 +1,5 @@
 import { Product } from '../types';
+import { supabase } from '../lib/supabase';
 
 export const productsData: Product[] = [
   {
@@ -91,14 +92,43 @@ export const productsData: Product[] = [
   }
 ];
 
+
 export async function fetchProducts(category: string = 'all', delayMs: number = 800): Promise<Product[]> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      if (category === 'all') {
-        resolve(productsData);
-      } else {
-        resolve(productsData.filter(p => p.category === category));
-      }
-    }, delayMs);
-  });
+  // Simulate network delay for UI consistency
+  if (delayMs > 0) {
+    await new Promise(res => setTimeout(res, delayMs));
+  }
+
+  try {
+    // Attempt Supabase fetch
+    let query = supabase.from('products').select('*');
+    if (category !== 'all') {
+      query = query.eq('category', category);
+    }
+    
+    const { data, error } = await query;
+    
+    if (error) throw error;
+    
+    if (data && data.length > 0) {
+      return data as Product[];
+    }
+  } catch (err) {
+    // If Supabase fails (e.g. placeholder keys), fallback to our mock
+    console.warn("Supabase fetch failed. Falling back to local mock data.");
+  }
+  
+  // Fallback Logic
+  const savedMock = localStorage.getItem('chk_mock_products');
+  let currentProducts = savedMock ? JSON.parse(savedMock) : productsData;
+  
+  if (!savedMock) {
+    localStorage.setItem('chk_mock_products', JSON.stringify(productsData));
+  }
+  
+  if (category === 'all') {
+    return currentProducts;
+  } else {
+    return currentProducts.filter((p: Product) => p.category === category);
+  }
 }

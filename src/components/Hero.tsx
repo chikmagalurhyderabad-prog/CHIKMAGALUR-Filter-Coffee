@@ -19,7 +19,7 @@ const slides = [
     title: "Franchise Opportunity",
     description: "Join the Chikmagalur Filter Coffee family. Open your own premium outlet with our complete end-to-end franchise support.",
     buttonText: "FRANCHISE ENQUIRY",
-    buttonLink: "/contact",
+    buttonLink: "/franchise",
     showPrice: false,
   }
 ];
@@ -38,7 +38,7 @@ export default function Hero() {
   const prevSlide = () => setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#3D2B1F]">
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#593222]">
       {/* Static Background Video */}
       <video
         src="/hero-video.mp4"
@@ -49,7 +49,7 @@ export default function Hero() {
         className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
       />
 
-      <div className="absolute inset-0 bg-[#3D2B1F]/60 mix-blend-multiply" />
+      <div className="absolute inset-0 bg-[#593222]/60 mix-blend-multiply" />
       <div className="absolute inset-0 bg-black/30" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center w-full relative z-10 pt-20">
@@ -76,7 +76,7 @@ export default function Hero() {
             <div className="flex flex-wrap items-center justify-center gap-6 mt-4">
               <Link
                 to={slides[currentSlide].buttonLink}
-                className="btn-sweep bg-[#3D2B1F] text-white px-10 py-5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold inline-block border border-transparent hover:border-[#B48C44] transition-colors"
+                className="btn-sweep bg-[#593222] text-white px-10 py-5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold inline-block border border-transparent hover:border-[#B48C44] transition-colors"
               >
                 <span className="relative z-10">{slides[currentSlide].buttonText}</span>
               </Link>

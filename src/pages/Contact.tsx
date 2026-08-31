@@ -44,16 +44,16 @@ export default function Contact() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
       <div className="text-center mb-16">
         <span className="text-[#B48C44] text-xs uppercase tracking-[0.3em] font-sans font-bold block mb-4">Get In Touch</span>
-        <h1 className="text-4xl lg:text-5xl font-medium text-[#3D2B1F] tracking-tight">Contact Us</h1>
+        <h1 className="text-4xl lg:text-5xl font-medium text-[#593222] tracking-tight">Contact Us</h1>
       </div>
-      <div className="max-w-xl mx-auto bg-[#FAF7F2] p-10 border border-[#3D2B1F]/10">
+      <div className="max-w-xl mx-auto bg-[#FFFFFF] p-10 border border-[#593222]/10">
         {success ? (
           <div className="text-center py-8">
-            <h3 className="text-2xl font-medium text-[#3D2B1F] mb-4">Thank You</h3>
-            <p className="text-[#3D2B1F] opacity-80">Your message has been sent successfully. We will get back to you shortly.</p>
+            <h3 className="text-2xl font-medium text-[#593222] mb-4">Thank You</h3>
+            <p className="text-[#593222] opacity-80">Your message has been sent successfully. We will get back to you shortly.</p>
             <button 
               onClick={() => setSuccess(false)}
-              className="mt-8 bg-[#3D2B1F] text-white px-10 py-5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold hover:bg-[#B48C44] transition-colors"
+              className="mt-8 bg-[#593222] text-white px-10 py-5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold hover:bg-[#B48C44] transition-colors"
             >
               Send Another Message
             </button>
@@ -66,42 +66,42 @@ export default function Contact() {
               </div>
             )}
             <div>
-              <label className="block text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-[#3D2B1F] mb-2">Name</label>
+              <label className="block text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-[#593222] mb-2">Name</label>
               <input 
                 type="text" 
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 maxLength={100}
                 required
-                className="w-full border-b border-[#3D2B1F]/20 bg-transparent py-3 focus:outline-none focus:border-[#B48C44] text-[#3D2B1F] font-serif" 
+                className="w-full border-b border-[#593222]/20 bg-transparent py-3 focus:outline-none focus:border-[#B48C44] text-[#593222] font-serif" 
               />
             </div>
             <div>
-              <label className="block text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-[#3D2B1F] mb-2">Email</label>
+              <label className="block text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-[#593222] mb-2">Email</label>
               <input 
                 type="email" 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 maxLength={150}
                 required
-                className="w-full border-b border-[#3D2B1F]/20 bg-transparent py-3 focus:outline-none focus:border-[#B48C44] text-[#3D2B1F] font-serif" 
+                className="w-full border-b border-[#593222]/20 bg-transparent py-3 focus:outline-none focus:border-[#B48C44] text-[#593222] font-serif" 
               />
             </div>
             <div>
-              <label className="block text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-[#3D2B1F] mb-2">Message</label>
+              <label className="block text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-[#593222] mb-2">Message</label>
               <textarea 
                 rows={4} 
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 maxLength={1000}
                 required
-                className="w-full border-b border-[#3D2B1F]/20 bg-transparent py-3 focus:outline-none focus:border-[#B48C44] text-[#3D2B1F] font-serif"
+                className="w-full border-b border-[#593222]/20 bg-transparent py-3 focus:outline-none focus:border-[#B48C44] text-[#593222] font-serif"
               ></textarea>
             </div>
             <button 
               type="submit" 
               disabled={isSubmitting}
-              className="bg-[#3D2B1F] text-white px-10 py-5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold hover:bg-[#B48C44] transition-colors w-full disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-[#593222] text-white px-10 py-5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold hover:bg-[#B48C44] transition-colors w-full disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? 'Sending...' : 'Send Message'}
             </button>
