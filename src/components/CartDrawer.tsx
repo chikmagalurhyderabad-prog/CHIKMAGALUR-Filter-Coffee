@@ -29,10 +29,10 @@ export default function CartDrawer() {
 
   if (!isCartOpen) return null;
 
-  const handleApplyCoupon = (e: React.FormEvent) => {
+  const handleApplyCoupon = async (e: React.FormEvent) => {
     e.preventDefault();
     if (inputCoupon.trim()) {
-      applyCoupon(inputCoupon);
+      await applyCoupon(inputCoupon);
       setInputCoupon('');
     }
   };

@@ -8,7 +8,7 @@ export const productsData: Product[] = [
     price: "₹ 150.00",
     rawPrice: 150,
     category: "powder",
-    image: "https://images.unsplash.com/photo-1559525839-b184a4d698c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    image: "/images/slide4.jpg",
     description: "Premium blend of 80% Coffee and 20% Chicory for authentic South Indian filter decoction.",
     roastProfile: "Medium-Dark Roast",
     weight: "500g"
@@ -19,7 +19,7 @@ export const productsData: Product[] = [
     price: "₹ 180.00",
     rawPrice: 180,
     category: "powder",
-    image: "https://images.unsplash.com/photo-1587734195503-904fca47e0e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    image: "/images/slide5.jpg",
     description: "100% Pure plantation Arabica & Robusta coffee for the perfect strong aromatic cup.",
     roastProfile: "Dark Roast",
     weight: "500g"
@@ -30,7 +30,7 @@ export const productsData: Product[] = [
     price: "₹ 400.00",
     rawPrice: 400,
     category: "beans",
-    image: "https://images.unsplash.com/photo-1558160074-4d7d8bdf4256?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    image: "/images/slide4.jpg",
     description: "Finest handpicked single-bean peaberry, slow roasted to accentuate caramel and chocolate undertones.",
     roastProfile: "Medium Roast",
     weight: "250g"
@@ -41,7 +41,7 @@ export const productsData: Product[] = [
     price: "₹ 200.00",
     rawPrice: 200,
     category: "estate",
-    image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    image: "/images/slide5.jpg",
     description: "Signature single-origin blend straight from high-altitude Chikmagalur shade-grown estates.",
     roastProfile: "Medium-Dark Roast",
     weight: "500g"
@@ -52,7 +52,7 @@ export const productsData: Product[] = [
     price: "₹ 450.00",
     rawPrice: 450,
     category: "beans",
-    image: "https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    image: "/images/slide4.jpg",
     description: "Premium AAA grade washed Arabica beans with a smooth body, mild acidity, and delicate spice notes.",
     roastProfile: "City Roast",
     weight: "250g"
@@ -63,7 +63,7 @@ export const productsData: Product[] = [
     price: "₹ 140.00",
     rawPrice: 140,
     category: "powder",
-    image: "https://images.unsplash.com/photo-1509785307050-d4066910ec1e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    image: "/images/slide5.jpg",
     description: "Rich, thick, and lingering brew crafted according to ancestral South Indian coffee traditions.",
     roastProfile: "Dark Roast",
     weight: "500g"
@@ -74,7 +74,7 @@ export const productsData: Product[] = [
     price: "₹ 420.00",
     rawPrice: 420,
     category: "estate",
-    image: "https://images.unsplash.com/photo-1447933601403-0c6688de566e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    image: "/images/slide4.jpg",
     description: "Naturally aged in monsoon winds to produce a unique mellow cup with velvety crema and low acidity.",
     roastProfile: "Medium Roast",
     weight: "250g"
@@ -85,7 +85,7 @@ export const productsData: Product[] = [
     price: "₹ 260.00",
     rawPrice: 260,
     category: "beans",
-    image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    image: "/images/slide5.jpg",
     description: "Exceptional washed Robusta with bold body, intense nutty flavour, and heavy chocolate finish.",
     roastProfile: "Vienna Roast",
     weight: "500g"
@@ -111,7 +111,12 @@ export async function fetchProducts(category: string = 'all', delayMs: number = 
     if (error) throw error;
     
     if (data && data.length > 0) {
-      return data as Product[];
+      return data.map((item: any) => ({
+        ...item,
+        image: item.image_url || item.image,
+        price: item.price ? (typeof item.price === 'number' ? `₹ ${item.price.toFixed(2)}` : item.price) : '₹ 0.00',
+        rawPrice: item.price ? (typeof item.price === 'number' ? item.price : parseFloat(item.price.replace(/[^0-9.]/g, ''))) : 0,
+      })) as Product[];
     }
   } catch (err) {
     // If Supabase fails (e.g. placeholder keys), fallback to our mock
@@ -119,11 +124,11 @@ export async function fetchProducts(category: string = 'all', delayMs: number = 
   }
   
   // Fallback Logic
-  const savedMock = localStorage.getItem('chk_mock_products');
+  const savedMock = localStorage.getItem('chk_mock_products_v2');
   let currentProducts = savedMock ? JSON.parse(savedMock) : productsData;
   
   if (!savedMock) {
-    localStorage.setItem('chk_mock_products', JSON.stringify(productsData));
+    localStorage.setItem('chk_mock_products_v2', JSON.stringify(productsData));
   }
   
   if (category === 'all') {

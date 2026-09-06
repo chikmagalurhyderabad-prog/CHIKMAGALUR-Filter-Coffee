@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { Product } from '../types';
 import { productsData } from '../data/products';
 import ProductSkeleton from './ProductSkeleton';
@@ -30,9 +31,17 @@ export default function Products({
   const { addToCart } = useCart();
   const [addedId, setAddedId] = useState<number | null>(null);
 
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
   const displayProducts = limit ? products.slice(0, limit) : products;
 
   const handleQuickAdd = (product: Product) => {
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: { pathname: '/shop' } } });
+      return;
+    }
+    
     addToCart(product);
     setAddedId(product.id);
     setTimeout(() => {

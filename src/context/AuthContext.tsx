@@ -185,6 +185,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       orderNumber: `CKM-1938-${randomNum}`,
       date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
     };
+
+    try {
+      const { data: session } = await supabase.auth.getSession();
+      if (session?.session?.user) {
+        // Validate status against Postgres check constraint
+        const validStatuses = ['pending', 'processing', 'shipped', 'delivered'];
+        const dbStatus = validStatuses.includes(newOrder.status) ? newOrder.status : 'pending';
+
+        // Insert into Supabase 'orders' table
+        const { error } = await supabase.from('orders').insert([{
+          user_id: session.session.user.id,
+          items: newOrder.items,
+          total_amount: newOrder.total,
+          shipping_address: newOrder.shippingAddress,
+          status: dbStatus
+        }]);
+        if (error) {
+          console.error('Error saving order to Supabase:', error);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to create order in database:', err);
+    }
+
     setOrders(prev => [newOrder, ...prev]);
     return newOrder;
   };

@@ -12,7 +12,8 @@ export default function Header() {
   const { pathname } = useLocation();
   const isHome = pathname === '/';
   const isFranchise = pathname === '/franchise';
-  const isTransparent = isHome || isFranchise;
+  const isAbout = pathname === '/about';
+  const isTransparent = isHome || isFranchise || isAbout;
 
   const textColorClass = isTransparent ? 'text-white' : 'text-[#593222]';
 
@@ -38,6 +39,7 @@ export default function Header() {
 
           <nav className="hidden md:flex space-x-12 lg:space-x-20">
             <Link to="/" className={`nav-link text-[11px] uppercase tracking-[0.2em] font-sans font-semibold ${textColorClass} hover:text-[#B48C44] transition-colors`}>Home</Link>
+            <Link to="/about" className={`nav-link text-[11px] uppercase tracking-[0.2em] font-sans font-semibold ${textColorClass} hover:text-[#B48C44] transition-colors`}>About Us</Link>
             <Link to="/shop" className={`nav-link text-[11px] uppercase tracking-[0.2em] font-sans font-semibold ${textColorClass} hover:text-[#B48C44] transition-colors`}>Shop</Link>
             <Link to="/franchise" className={`nav-link text-[11px] uppercase tracking-[0.2em] font-sans font-semibold ${textColorClass} hover:text-[#B48C44] transition-colors`}>Franchise</Link>
             <Link to="/contact" className={`nav-link text-[11px] uppercase tracking-[0.2em] font-sans font-semibold ${textColorClass} hover:text-[#B48C44] transition-colors`}>Contact</Link>
@@ -65,7 +67,13 @@ export default function Header() {
             </Link>
 
             <button
-              onClick={openCart}
+              onClick={() => {
+                if (!user) {
+                  navigate('/login', { state: { from: { pathname: '/cart' } } });
+                } else {
+                  openCart();
+                }
+              }}
               className={`${textColorClass} hover:text-[#B48C44] transition-colors relative p-1 cursor-pointer group`}
               aria-label={`Shopping cart with ${totalItemsCount} items`}
             >
@@ -90,6 +98,13 @@ export default function Header() {
               className="py-2 hover:text-[#B48C44] border-b border-[#593222]/5"
             >
               Home
+            </Link>
+            <Link
+              to="/about"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="py-2 hover:text-[#B48C44] border-b border-[#593222]/5"
+            >
+              About Us
             </Link>
             <Link
               to="/shop"

@@ -5,9 +5,18 @@ export interface Product {
   rawPrice: number;
   category: 'all' | 'powder' | 'beans' | 'estate';
   image: string;
+  additionalImages?: string[];
   description: string;
   roastProfile?: string;
   weight?: string;
+}
+
+export interface Coupon {
+  id: string;
+  code: string;
+  discount_percentage: number;
+  is_active: boolean;
+  created_at?: string;
 }
 
 export type GrindOption = 

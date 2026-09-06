@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Product, CartItem, GrindOption, WeightOption } from '../types';
+import { supabase } from '../lib/supabase';
 
 interface AddToCartOptions {
   grind?: GrindOption;
@@ -22,7 +23,7 @@ interface CartContextType {
   discountFlat: number;
   couponError: string | null;
   couponSuccess: string | null;
-  applyCoupon: (code: string) => boolean;
+  applyCoupon: (code: string) => Promise<boolean>;
   removeCoupon: () => void;
   subtotal: number;
   discountAmount: number;
@@ -35,11 +36,7 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-const COUPONS: Record<string, { percent?: number; flat?: number; desc: string }> = {
-  'KAAPI1938': { percent: 15, desc: '15% Heritage Discount' },
-  'CHIKMAGALUR10': { percent: 10, desc: '10% Welcome Kaapi Discount' },
-  'FIRSTBREW': { flat: 75, desc: '₹75 Off First Order' },
-};
+// Hardcoded coupons removed, using Supabase now
 
 function calculatePriceForWeight(basePrice: number, weight: WeightOption): number {
   if (weight === '250g') {
@@ -154,7 +151,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setItems([]);
   };
 
-  const applyCoupon = (code: string): boolean => {
+  const applyCoupon = async (code: string): Promise<boolean> => {
     const cleanCode = code.trim().toUpperCase();
     setCouponError(null);
     setCouponSuccess(null);
@@ -164,15 +161,26 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       return false;
     }
 
-    const matched = COUPONS[cleanCode];
-    if (matched) {
+    try {
+      const { data, error } = await supabase
+        .from('coupons')
+        .select('*')
+        .eq('code', cleanCode)
+        .eq('is_active', true)
+        .single();
+
+      if (error || !data) {
+        setCouponError('Invalid or expired coupon code.');
+        return false;
+      }
+
       setCouponCode(cleanCode);
-      setDiscountPercent(matched.percent || 0);
-      setDiscountFlat(matched.flat || 0);
-      setCouponSuccess(`Coupon "${cleanCode}" applied: ${matched.desc}`);
+      setDiscountPercent(data.discount_percentage);
+      setDiscountFlat(0);
+      setCouponSuccess(`Coupon "${cleanCode}" applied: ${data.discount_percentage}% off`);
       return true;
-    } else {
-      setCouponError('Invalid coupon code. Try KAAPI1938 or CHIKMAGALUR10');
+    } catch (err) {
+      setCouponError('Failed to verify coupon.');
       return false;
     }
   };

@@ -7,20 +7,47 @@ const slides = [
   {
     id: 1,
     subtitle: "Chikmagalur Heritage",
-    title: "Best Chikmagalur Coffee",
+    title: "Chikmagalur Filter Coffee",
     description: "Shop Online from Chikmagalur Coffee Works. Buy Coffee Powder, Roasted Beans, Tea, Spices, and Brewing Accessories.",
     buttonText: "SHOP NOW",
     buttonLink: "/shop",
     showPrice: true,
+    type: "video",
+    media: "/hero-video.mp4"
   },
   {
     id: 2,
-    subtitle: "Partner With Us",
-    title: "Franchise Opportunity",
-    description: "Join the Chikmagalur Filter Coffee family. Open your own premium outlet with our complete end-to-end franchise support.",
-    buttonText: "FRANCHISE ENQUIRY",
-    buttonLink: "/franchise",
+    subtitle: "",
+    title: "",
+    description: "",
+    buttonText: "",
+    buttonLink: "",
     showPrice: false,
+    type: "image",
+    media: "/images/slide-new-stall.jpg",
+    imageClass: "brightness-125"
+  },
+  {
+    id: 3,
+    subtitle: "Our Signature Blend",
+    title: "Authentic Filter Coffee",
+    description: "Rich, aromatic, and perfectly balanced. Sourced directly from the lush hills of Chikmagalur to your cup.",
+    buttonText: "SHOP COFFEE",
+    buttonLink: "/shop",
+    showPrice: false,
+    type: "image",
+    media: "/images/slide4.jpg"
+  },
+  {
+    id: 4,
+    subtitle: "The Perfect Cup",
+    title: "Brewed to Perfection",
+    description: "Experience the irresistible taste and golden crema of our traditional brass-brewed South Indian filter coffee.",
+    buttonText: "DISCOVER MORE",
+    buttonLink: "/about",
+    showPrice: false,
+    type: "image",
+    media: "/images/slide5.jpg"
   }
 ];
 
@@ -39,18 +66,37 @@ export default function Hero() {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#593222]">
-      {/* Static Background Video */}
-      <video
-        src="/hero-video.mp4"
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
-      />
+      {/* Background Media Slideshow */}
+      <AnimatePresence initial={false}>
+        <motion.div
+          key={currentSlide}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1 }}
+          className="absolute inset-0 w-full h-full"
+        >
+          {slides[currentSlide].type === 'video' ? (
+            <video
+              src={slides[currentSlide].media}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover pointer-events-none select-none"
+            />
+          ) : (
+            <img
+              src={slides[currentSlide].media}
+              alt={slides[currentSlide].title || 'Chikmagalur Coffee'}
+              className={`w-full h-full object-cover pointer-events-none select-none ${slides[currentSlide].imageClass || ''}`}
+            />
+          )}
+        </motion.div>
+      </AnimatePresence>
 
-      <div className="absolute inset-0 bg-[#593222]/60 mix-blend-multiply" />
-      <div className="absolute inset-0 bg-black/30" />
+      <div className={`absolute inset-0 transition-opacity duration-1000 ${slides[currentSlide].id === 2 ? 'opacity-0' : 'opacity-100'} bg-[#593222]/60 mix-blend-multiply z-0`} />
+      <div className={`absolute inset-0 transition-opacity duration-1000 ${slides[currentSlide].id === 2 ? 'opacity-10' : 'opacity-100'} bg-black/30 z-0`} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center w-full relative z-10 pt-20">
         <AnimatePresence mode="wait">
@@ -62,31 +108,36 @@ export default function Hero() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="w-full max-w-3xl flex flex-col items-center space-y-8"
           >
-            <div>
-              <span className="text-[#B48C44] text-xs uppercase tracking-[0.3em] font-sans font-bold block mb-4">
-                {slides[currentSlide].subtitle}
-              </span>
-              <h1 className="text-5xl lg:text-7xl leading-[1.05] tracking-tight font-medium mb-6 text-white drop-shadow-lg">
-                {slides[currentSlide].title}
-              </h1>
-              <p className="text-lg leading-relaxed text-white/90 max-w-xl mx-auto font-light drop-shadow-md">
-                {slides[currentSlide].description}
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center justify-center gap-6 mt-4">
-              <Link
-                to={slides[currentSlide].buttonLink}
-                className="btn-sweep bg-[#593222] text-white px-10 py-5 text-[11px] uppercase tracking-[0.2em] font-sans font-bold inline-block border border-transparent hover:border-[#B48C44] transition-colors"
-              >
-                <span className="relative z-10">{slides[currentSlide].buttonText}</span>
-              </Link>
-              {slides[currentSlide].showPrice && (
-                <div className="flex flex-col text-left border-l border-white/20 pl-6">
-                  <span className="text-[10px] uppercase tracking-[0.1em] text-white/70 font-sans font-bold">Starting at</span>
-                  <span className="text-xl text-white font-medium">₹150.00</span>
-                </div>
-              )}
-            </div>
+            {slides[currentSlide].title && (
+              <div>
+                <span className="text-[#B48C44] text-[10px] sm:text-xs uppercase tracking-[0.3em] font-sans font-bold block mb-4">
+                  {slides[currentSlide].subtitle}
+                </span>
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-tight font-medium mb-4 sm:mb-6 text-white drop-shadow-lg">
+                  {slides[currentSlide].title}
+                </h1>
+                <p className="text-base sm:text-lg leading-relaxed text-white/90 max-w-xl mx-auto font-light drop-shadow-md px-4 sm:px-0">
+                  {slides[currentSlide].description}
+                </p>
+              </div>
+            )}
+            
+            {slides[currentSlide].buttonText && (
+              <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-4">
+                <Link
+                  to={slides[currentSlide].buttonLink}
+                  className="btn-sweep bg-[#593222] text-white px-8 py-4 sm:px-10 sm:py-5 text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-sans font-bold inline-block border border-transparent hover:border-[#B48C44] transition-colors"
+                >
+                  <span className="relative z-10">{slides[currentSlide].buttonText}</span>
+                </Link>
+                {slides[currentSlide].showPrice && (
+                  <div className="flex flex-col text-left border-l border-white/20 pl-6">
+                    <span className="text-[10px] uppercase tracking-[0.1em] text-white/70 font-sans font-bold">Starting at</span>
+                    <span className="text-xl text-white font-medium">₹ 150.00</span>
+                  </div>
+                )}
+              </div>
+            )}
           </motion.div>
         </AnimatePresence>
       </div>
@@ -124,4 +175,3 @@ export default function Hero() {
     </div>
   );
 }
-
