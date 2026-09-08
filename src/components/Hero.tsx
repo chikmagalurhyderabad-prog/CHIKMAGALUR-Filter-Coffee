@@ -6,17 +6,6 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 const slides = [
   {
     id: 1,
-    subtitle: "Chikmagalur Heritage",
-    title: "Chikmagalur Filter Coffee",
-    description: "Shop Online from Chikmagalur Coffee Works. Buy Coffee Powder, Roasted Beans, Tea, Spices, and Brewing Accessories.",
-    buttonText: "SHOP NOW",
-    buttonLink: "/shop",
-    showPrice: true,
-    type: "video",
-    media: "/hero-video.mp4"
-  },
-  {
-    id: 2,
     subtitle: "",
     title: "",
     description: "",
@@ -25,29 +14,31 @@ const slides = [
     showPrice: false,
     type: "image",
     media: "/images/slide-new-stall.jpg",
-    imageClass: "brightness-125"
+    imageClass: "object-contain md:object-cover object-center"
+  },
+  {
+    id: 2,
+    subtitle: "Partner With Us",
+    title: "Franchise Opportunities",
+    description: "Bring the authentic taste of South Indian filter coffee to your city. Partner with us and build a successful business with our proven model.",
+    buttonText: "LEARN MORE",
+    buttonLink: "/franchise",
+    showPrice: false,
+    type: "image",
+    media: "/images/whatsapp-1.jpg",
+    imageClass: "object-contain md:object-cover object-center"
   },
   {
     id: 3,
-    subtitle: "Our Signature Blend",
-    title: "Authentic Filter Coffee",
-    description: "Rich, aromatic, and perfectly balanced. Sourced directly from the lush hills of Chikmagalur to your cup.",
-    buttonText: "SHOP COFFEE",
+    subtitle: "Shop Online",
+    title: "Premium Products",
+    description: "Explore our signature range of freshly roasted coffee beans, authentic filter coffee powder, and traditional brass brewing accessories.",
+    buttonText: "SHOP NOW",
     buttonLink: "/shop",
     showPrice: false,
     type: "image",
-    media: "/images/slide4.jpg"
-  },
-  {
-    id: 4,
-    subtitle: "The Perfect Cup",
-    title: "Brewed to Perfection",
-    description: "Experience the irresistible taste and golden crema of our traditional brass-brewed South Indian filter coffee.",
-    buttonText: "DISCOVER MORE",
-    buttonLink: "/about",
-    showPrice: false,
-    type: "image",
-    media: "/images/slide5.jpg"
+    media: "/images/whatsapp-2.jpg",
+    imageClass: "object-contain md:object-cover object-center"
   }
 ];
 
@@ -57,7 +48,7 @@ export default function Hero() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 6000);
+    }, 15000);
     return () => clearInterval(timer);
   }, []);
 
@@ -65,7 +56,7 @@ export default function Hero() {
   const prevSlide = () => setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#593222]">
+    <div className="relative aspect-[4/3] sm:aspect-video md:aspect-auto md:min-h-screen flex items-center justify-center overflow-hidden bg-white md:bg-[#593222]">
       {/* Background Media Slideshow */}
       <AnimatePresence initial={false}>
         <motion.div
@@ -89,14 +80,14 @@ export default function Hero() {
             <img
               src={slides[currentSlide].media}
               alt={slides[currentSlide].title || 'Chikmagalur Coffee'}
-              className={`w-full h-full object-cover pointer-events-none select-none ${slides[currentSlide].imageClass || ''}`}
+              className={`w-full h-full pointer-events-none select-none ${slides[currentSlide].imageClass || 'object-cover'}`}
             />
           )}
         </motion.div>
       </AnimatePresence>
 
-      <div className={`absolute inset-0 transition-opacity duration-1000 ${slides[currentSlide].id === 2 ? 'opacity-0' : 'opacity-100'} bg-[#593222]/60 mix-blend-multiply z-0`} />
-      <div className={`absolute inset-0 transition-opacity duration-1000 ${slides[currentSlide].id === 2 ? 'opacity-10' : 'opacity-100'} bg-black/30 z-0`} />
+      <div className={`absolute inset-0 transition-opacity duration-1000 ${slides[currentSlide].title ? 'opacity-100' : 'opacity-0'} bg-[#593222]/60 mix-blend-multiply z-0`} />
+      <div className={`absolute inset-0 transition-opacity duration-1000 ${slides[currentSlide].title ? 'opacity-100' : 'opacity-10'} bg-black/30 z-0`} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center w-full relative z-10 pt-20">
         <AnimatePresence mode="wait">

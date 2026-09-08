@@ -13,14 +13,20 @@ export default function Header() {
   const isHome = pathname === '/';
   const isFranchise = pathname === '/franchise';
   const isAbout = pathname === '/about';
-  const isTransparent = isHome || isFranchise || isAbout;
 
-  const textColorClass = isTransparent ? 'text-white' : 'text-[#593222]';
+  let headerClass = "bg-[#FFFFFF] border-b border-[#593222]/10 sticky top-0 z-40 transition-all duration-300";
+  let textColorClass = "text-[#593222]";
+
+  if (isFranchise || isAbout) {
+    headerClass = "absolute top-0 left-0 right-0 bg-transparent border-b border-white/10 z-40 transition-all duration-300";
+    textColorClass = "text-white";
+  } else if (isHome) {
+    headerClass = "bg-[#FFFFFF] md:bg-transparent border-b border-[#593222]/10 md:border-white/10 sticky md:absolute top-0 left-0 right-0 z-40 transition-all duration-300";
+    textColorClass = "max-md:text-[#593222] md:text-white";
+  }
 
   return (
-    <header className={isTransparent
-      ? "absolute top-0 left-0 right-0 bg-transparent border-b border-white/10 z-40 transition-all duration-300"
-      : "bg-[#FFFFFF] border-b border-[#593222]/10 sticky top-0 z-40 transition-all duration-300"}>
+    <header className={headerClass}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-[96px]">
           <div className="flex items-center">
